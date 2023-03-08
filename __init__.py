@@ -1,141 +1,9 @@
-# Load libraries
-import pandas
-from flask import Flask
-from asyncio import __main__
+from flask import Flask, request, render_template
+import pandas as pd
 
-result = '''<!DOCTYPE html>
-<html>
-<head>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 0
-    }
+app = Flask(__name__)
 
-    th, td {
-      text-align: left;
-      padding: 8px;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-
-    th {
-      background-color: #630031;
-      color: white;
-    }
- 
-    .btn {
-        float: left;
-        width: 8%;
-        margin: 12px
-        
-    }
-    
-    .btn-primary {
-        color: white;
-        background-color: #630031;
-        border-color: #CF4420
-  }
-
-    .btn-primary:hover {
-      color: white;
-      background-color: #CF4420;
-      border-color: #CF4420
-
-}
-
-    header {
-        margin: 18px;
-}
-    paragraph
-    
-    
-  </style>
-
-<title>Pathways Finder</title>
-</head>
-<header>
-  <h1 style="font-size: 36px; color: #630031; text-shadow: 2px 2px 4px #CF4420;">VT Pathways Finder</h1>
-    <form class="form" method="POST" action="/pathway1f">
-      <button class="btn btn-primary" type="submit">Pathways 1f</button>
-    </form>
-
-    <form class="form" method="POST" action="/pathway1a">
-      <button class="btn btn-primary" type="submit">Pathways 1a</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway2">
-      <button class="btn btn-primary" type="submit">Pathways 2</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway3">
-      <button class="btn btn-primary" type="submit">Pathways 3</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway4">
-      <button class="btn btn-primary" type="submit">Pathways 4</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway5a">
-      <button class="btn btn-primary" type="submit">Pathways 5a</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway5f">
-      <button class="btn btn-primary" type="submit">Pathways 5f</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway6a">
-      <button class="btn btn-primary" type="submit">Pathways 6a</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway6d">
-      <button class="btn btn-primary" type="submit">Pathways 6d</button>
-    </form>
-    
-    <form class="form" method="POST" action="/pathway7">
-      <button class="btn btn-primary" type="submit">Pathways 7</button>
-    </form>
-</header>
-
-<table border = "1">
-<tr>
-<th>Academic Year</th>
-<th>Term</th>
-<th>Subject</th>
-<th>Course No.</th>
-<th>Course Title</th>
-<th>Instructor</th>
-<th>GPA</th>
-<th>A(%)</th>
-<th>A-(%)</th>
-<th>B+(%)</th>
-<th>B(%)</th>
-<th>B-(%)</th>
-<th>C+(%)</th>
-<th>C(%)</th>
-<th>C-(%)</th>
-<th>D+(%)</th>
-<th>D(%)</th>
-<th>D-(%)</th>
-<th>F(%)</th>
-<th>W</th>
-<th>Graded Enrollment</th>
-<th>CRN</th>
-<th>Credits</th>
-'''
-
-end = '''
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<body>
-'''
-
-# Load dataset
+# Load datasets
 file = "Grade Distribution-2.csv"
 filep1a = "Pathways1a.csv"
 filep1f = "Pathways1f.csv"
@@ -150,19 +18,19 @@ filep7 = "Pathways7.csv"
 
 names = ['Academic Year', 'Term', 'Subject', 'Course No.', 'Course Title', 'Instructor', 'GPA', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'W', 'Graded Enrollment', 'CRN', 'Credits']
 courseData = ['Subject', 'Course No.']
-dataset = pandas.read_csv(file, names=names)
+dataset = pd.read_csv(file, names=names)
 dataset = dataset.sort_values(by=['GPA', 'Course Title'], ascending=False)
 
-pathways1a = pandas.read_csv(filep1a, names=courseData)
-pathways1f = pandas.read_csv(filep1f, names=courseData)
-pathways2 = pandas.read_csv(filep2, names=courseData)
-pathways3 = pandas.read_csv(filep3, names=courseData)
-pathways4 = pandas.read_csv(filep4, names=courseData)
-pathways5a = pandas.read_csv(filep5a, names=courseData)
-pathways5f = pandas.read_csv(filep5f, names=courseData)
-pathways6a = pandas.read_csv(filep6a, names=courseData)
-pathways6d = pandas.read_csv(filep6d, names=courseData)
-pathways7 = pandas.read_csv(filep7, names=courseData)
+pathways1a = pd.read_csv(filep1a, names=courseData)
+pathways1f = pd.read_csv(filep1f, names=courseData)
+pathways2 = pd.read_csv(filep2, names=courseData)
+pathways3 = pd.read_csv(filep3, names=courseData)
+pathways4 = pd.read_csv(filep4, names=courseData)
+pathways5a = pd.read_csv(filep5a, names=courseData)
+pathways5f = pd.read_csv(filep5f, names=courseData)
+pathways6a = pd.read_csv(filep6a, names=courseData)
+pathways6d = pd.read_csv(filep6d, names=courseData)
+pathways7 = pd.read_csv(filep7, names=courseData)
 
 
 def convertToSet(df):
@@ -170,7 +38,6 @@ def convertToSet(df):
     for index, row in df.iterrows():
         localSet.add(str(row['Course No.']) + str(row['Subject']))
     return localSet
-
 
 p1a = convertToSet(pathways1a)
 p1f = convertToSet(pathways1f)
@@ -185,93 +52,455 @@ p7 = convertToSet(pathways7)
 
 
 def findCourses(path):
-    returnString = ""
-    for index, row in dataset.iterrows():
-        if ((str(row['Course No.']) + str(row['Subject'])) in path): 
-            returnString += "<tr>"
-            returnString += "<td>" + str(row['Academic Year']) + "</td>"
-            returnString += "<td>" + str(row['Term']) + "</td>"
-            returnString += "<td>" + str(row['Subject']) + "</td>"
-            returnString += "<td>" + str(row['Course No.']) + "</td>"
-            returnString += "<td>" + str(row['Course Title']) + "</td>"
-            returnString += "<td>" + str(row['Instructor']) + "</td>"
-            returnString += "<td>" + str(row['GPA']) + "</td>"
-            returnString += "<td>" + str(row['A']) + "</td>"
-            returnString += "<td>" + str(row['A-']) + "</td>"
-            returnString += "<td>" + str(row['B+']) + "</td>"
-            returnString += "<td>" + str(row['B']) + "</td>"
-            returnString += "<td>" + str(row['B-']) + "</td>"
-            returnString += "<td>" + str(row['C+']) + "</td>"
-            returnString += "<td>" + str(row['C']) + "</td>"
-            returnString += "<td>" + str(row['C-']) + "</td>"
-            returnString += "<td>" + str(row['D+']) + "</td>"
-            returnString += "<td>" + str(row['D']) + "</td>"
-            returnString += "<td>" + str(row['D-']) + "</td>"
-            returnString += "<td>" + str(row['F']) + "</td>"
-            returnString += "<td>" + str(row['W']) + "</td>"
-            returnString += "<td>" + str(row['Graded Enrollment']) + "</td>"
-            returnString += "<td>" + str(row['CRN']) + "</td>"
-            returnString += "<td>" + str(row['Credits']) + "</td>"
-    return returnString
-
-
-findCourses(p3)
-
-app = Flask(__name__)
+    return dataset.loc[(dataset['Course No.'].astype(str) + dataset['Subject']).isin(path)]
 
 
 @app.route("/", methods=["POST", "GET"])
-def default():
-    return result + findCourses(p1f) + end
+def index():
+    # Render the index template with links to each pathway
+    return render_template("initial.html")
 
 @app.route("/pathway1f", methods=["POST", "GET"])
 def pathway1f():
-    return result + findCourses(p1f) + end
+    filename = "pathway1f"
+    courses = findCourses(p1f)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  # get unique subjects from the dataset
+    courseNums = courses["Course No."].unique()  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  # get unique subjects from the dataset
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway1f/subject", methods=["POST", "GET"])
+def pathway1fsubject():
+    filename = "pathway1f"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p1f)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+    
 
 
 @app.route("/pathway1a", methods=["POST", "GET"])
 def pathway1a():
-    return result + findCourses(p1a) + end
+    filename = "pathway1a"    
+    courses = findCourses(p1a)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway1a/subject", methods=["POST", "GET"])
+def pathway1asubject():
+    filename = "pathway1a"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p1a)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway2", methods=["POST", "GET"])
 def pathway2():
-    return result + findCourses(p2) + end
+    filename = "pathway2"
+    courses = findCourses(p2)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway2/subject", methods=["POST", "GET"])
+def pathway2subject():
+    filename = "pathway2"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p2)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway3", methods=["POST", "GET"])
 def pathway3():
-    return result + findCourses(p3) + end
+    filename = "pathway3"
+    courses = findCourses(p3)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway3/subject", methods=["POST", "GET"])
+def pathway3subject():
+    filename = "pathway3"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p3)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway4", methods=["POST", "GET"])
 def pathway4():
-    return result + findCourses(p4) + end
+    filename = "pathway4"
+    courses = findCourses(p4)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway4/subject", methods=["POST", "GET"])
+def pathway4subject():
+    filename = "pathway4"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p4)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway5a", methods=["POST", "GET"])
 def pathway5a():
-    return result + findCourses(p5a) + end
+    filename = "pathway5a"
+    courses = findCourses(p5a)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway5a/subject", methods=["POST", "GET"])
+def pathway5asubject():
+    filename = "pathway5a"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p5a)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway5f", methods=["POST", "GET"])
 def pathway5f():
-    return result + findCourses(p5f) + end
+    filename = "pathway5f"
+    courses = findCourses(p5f)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway5f/subject", methods=["POST", "GET"])
+def pathway5fsubject():
+    filename = "pathway5f"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p5f)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway6a", methods=["POST", "GET"])
 def pathway6a():
-    return result + findCourses(p6a) + end
+    filename = "pathway6a"
+    courses = findCourses(p6a)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway6a/subject", methods=["POST", "GET"])
+def pathway6asubject():
+    filename = "pathway6a"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p6a)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway6d", methods=["POST", "GET"])
 def pathway6d():
-    return result + findCourses(p6d) + end
+    filename = "pathway6d"
+    courses = findCourses(p6d)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
 
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway6d/subject", methods=["POST", "GET"])
+def pathway6dsubject():
+    filename = "pathway6d"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p6d)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 @app.route("/pathway7", methods=["POST", "GET"])
 def pathway7():
-    return result + findCourses(p7) + end
+    filename = "pathway7"
+    courses = findCourses(p7)
+    subjects = courses["Subject"].unique()  
+    courseTitles = courses["Course Title"].unique() 
+    courseNums = courses["Course No."].unique()  
+    instructors = courses["Instructor"].unique()  
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
+
+@app.route("/pathway7/subject", methods=["POST", "GET"])
+def pathway7subject():
+    filename = "pathway7"
+    term = request.form.get("term")  # get the selected subject from the form
+    credit = request.form.get("credit")  
+    subject = request.form.get("subject")  
+    title = request.form.get("title") 
+    num = request.form.get("courseNum") 
+    instructor = request.form.get("instructor")
+
+    courses = findCourses(p7)
+    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
+    courseTitles = courses["Course Title"].unique()  
+    courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
+    instructors = courses["Instructor"].unique()  
+
+    if subject and subject != "All":  # filter data by subject if subject is not "All"
+        courses = courses.loc[courses["Subject"] == subject]
+    if term and term != "All": 
+        courses = courses.loc[courses["Term"] == term]
+    if title and title != "All":
+        courses = courses.loc[courses["Course Title"] == title]
+    if instructor and instructor != "All":
+        courses = courses.loc[courses["Instructor"] == instructor]
+    if credit and credit != "All": 
+        x = pd.to_numeric(courses['Credits'], errors='coerce')
+        courses = courses.loc[x == int(credit)]
+    if num and num != "All": 
+        x = pd.to_numeric(courses['Course No.'], errors='coerce')
+        courses = courses.loc[x == int(num)]
+
+    return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
 
 if __name__ == "__main__":

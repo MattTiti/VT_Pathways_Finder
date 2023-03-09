@@ -1,5 +1,8 @@
 from flask import Flask, request, render_template
 import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 
@@ -502,6 +505,35 @@ def pathway7subject():
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
+@app.route("/review", methods=["GET"])
+def review():
+    return render_template("review.html")
+
+@app.route("/reviewsubmitted", methods=["POST", "GET"])
+def reviewsubmitted():
+    name = request.form['name']
+    email = request.form['email']
+    review = request.form['review']
+
+    # create message
+    message = MIMEMultipart()
+    message['From'] = email
+    message['To'] = 'vtpathwaysfinder@gmail.com'
+    message['Subject'] = 'New review from {}'.format(name)
+
+    body = 'Name: {}\nEmail: {}\nReview: {}'.format(name, email, review)
+    message.attach(MIMEText(body, 'plain'))
+
+    # send email
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+
+        smtp.login('vtpathwaysfinder@gmail.com', 'xxx')
+        smtp.sendmail('vtpathwaysfinder@gmail.com', 'vtpathwaysfinder@gmail.com', message.as_string())
+
+    return render_template("reviewsubmitted.html")
 
 if __name__ == "__main__":
     app.run()

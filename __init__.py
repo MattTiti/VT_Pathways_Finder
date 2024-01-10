@@ -7,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 app = Flask(__name__)
 
 # Load datasets
-file = "Grade Distribution-2.csv"
+file = "Grade Distribution-6.csv"
 filep1a = "Pathways1a.csv"
 filep1f = "Pathways1f.csv"
 filep2 = "Pathways2.csv"
@@ -67,10 +67,10 @@ def index():
 def pathway1f():
     filename = "pathway1f"
     courses = findCourses(p1f)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  # get unique subjects from the dataset
-    courseNums = courses["Course No."].unique()  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  # get unique subjects from the dataset
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique())
+    courseNums = sorted(courses["Course No."].unique()) 
+    instructors = sorted(courses["Instructor"].unique())
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -85,10 +85,10 @@ def pathway1fsubject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p1f)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique())
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -113,10 +113,10 @@ def pathway1fsubject():
 def pathway1a():
     filename = "pathway1a"    
     courses = findCourses(p1a)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique())
+    courseNums = sorted(courses["Course No."].unique()) 
+    instructors = sorted(courses["Instructor"].unique())
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -131,10 +131,10 @@ def pathway1asubject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p1a)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique())
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -157,10 +157,10 @@ def pathway1asubject():
 def pathway2():
     filename = "pathway2"
     courses = findCourses(p2)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())  
+    instructors = sorted(courses["Instructor"].unique())  
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -175,10 +175,10 @@ def pathway2subject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p2)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique()) 
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -201,10 +201,10 @@ def pathway2subject():
 def pathway3():
     filename = "pathway3"
     courses = findCourses(p3)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())  
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -219,10 +219,10 @@ def pathway3subject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p3)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique()) 
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -245,10 +245,10 @@ def pathway3subject():
 def pathway4():
     filename = "pathway4"
     courses = findCourses(p4)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())  
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -263,10 +263,10 @@ def pathway4subject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p4)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique()) 
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -289,10 +289,10 @@ def pathway4subject():
 def pathway5a():
     filename = "pathway5a"
     courses = findCourses(p5a)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())  
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -307,10 +307,10 @@ def pathway5asubject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p5a)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique()) 
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -333,10 +333,10 @@ def pathway5asubject():
 def pathway5f():
     filename = "pathway5f"
     courses = findCourses(p5f)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())   
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -351,10 +351,10 @@ def pathway5fsubject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p5f)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique())  
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -377,10 +377,10 @@ def pathway5fsubject():
 def pathway6a():
     filename = "pathway6a"
     courses = findCourses(p6a)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())   
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -394,11 +394,10 @@ def pathway6asubject():
     num = request.form.get("courseNum") 
     instructor = request.form.get("instructor")
 
-    courses = findCourses(p6a)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique()) 
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -421,10 +420,10 @@ def pathway6asubject():
 def pathway6d():
     filename = "pathway6d"
     courses = findCourses(p6d)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())  
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -439,10 +438,10 @@ def pathway6dsubject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p6d)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique())  
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
@@ -465,10 +464,10 @@ def pathway6dsubject():
 def pathway7():
     filename = "pathway7"
     courses = findCourses(p7)
-    subjects = courses["Subject"].unique()  
-    courseTitles = courses["Course Title"].unique() 
-    courseNums = courses["Course No."].unique()  
-    instructors = courses["Instructor"].unique()  
+    subjects = sorted(courses["Subject"].unique())
+    courseTitles = sorted(courses["Course Title"].unique()) 
+    courseNums = sorted(courses["Course No."].unique())
+    instructors = sorted(courses["Instructor"].unique())  
 
     return render_template("pathway1f.html", courses=courses.to_dict('records'), subjects=subjects, courseTitles=courseTitles, instructors=instructors, courseNums=courseNums, filename=filename)
 
@@ -483,10 +482,10 @@ def pathway7subject():
     instructor = request.form.get("instructor")
 
     courses = findCourses(p7)
-    subjects = courses["Subject"].unique()  # get unique subjects from the dataset
-    courseTitles = courses["Course Title"].unique()  
+    subjects = sorted(courses["Subject"].unique())  # get unique subjects from the dataset
+    courseTitles = sorted(courses["Course Title"].unique())  
     courseNums = sorted(courses["Course No."].unique(), reverse=False)  # get unique subjects from the dataset
-    instructors = courses["Instructor"].unique()  
+    instructors = sorted(courses["Instructor"].unique())  
 
     if subject and subject != "All":  # filter data by subject if subject is not "All"
         courses = courses.loc[courses["Subject"] == subject]
